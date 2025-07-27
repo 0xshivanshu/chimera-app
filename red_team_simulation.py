@@ -24,9 +24,10 @@ def run_red_team_simulation():
         name="RedTeamOperator",
         human_input_mode="NEVER",
         is_termination_msg=lambda x: x.get("content", "").rstrip() == "TASK_COMPLETE",
+        code_execution_config={"last_n_messages": 1, "work_dir": "coding"}
     )
 
-    # Register adversary tools
+    # Register adversary tools with both agents
     adversary_tools = {
         "query_past_incidents": query_past_incidents,
         "craft_synthetic_attack_payload": craft_synthetic_attack_payload,
