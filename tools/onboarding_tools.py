@@ -39,7 +39,7 @@ def initialize_database():
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS behavioral_profiles (
             user_id TEXT PRIMARY KEY,
-            embeddings_json TEXT NOT NULL
+            kinetic_json TEXT NOT NULL
         )
         """)
         conn.commit()
@@ -69,36 +69,30 @@ def add_location_datapoint(user_id: str, lat: float, lon: float) -> dict:
         return {"error": str(e)}
 
 def add_behavioral_datapoint(user_id: str, kinetic_data: dict) -> dict:
-    """Adds a new behavioral data point to a user's profile."""
+    """Adds a new raw kinetic data point to a user's profile for statistical analysis."""
     try:
-        # Convert structured kinetic data into a descriptive sentence for better embedding quality.
-        kinetic_string = f"typing speed: {kinetic_data.get('typing_speed_wpm', 0)} words per minute, " \
-                         f"mouse speed: {kinetic_data.get('mouse_speed_pps', 0)} pixels per second"
-        
-        embedding = embedding_model.encode(kinetic_string).tolist()
-
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT embeddings_json FROM behavioral_profiles WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT kinetic_json FROM behavioral_profiles WHERE user_id = ?", (user_id,))
         row = cursor.fetchone()
 
         if row:
-            # User exists, append new embedding and keep the list at a max size.
-            embeddings_list = json.loads(row['embeddings_json'])
-            embeddings_list.append(embedding)
-            max_embeddings = 20 # Keep the profile relevant to recent behavior
-            embeddings_list = embeddings_list[-max_embeddings:]
-            new_embeddings_json = json.dumps(embeddings_list)
+            # User exists, append new kinetic data dictionary.
+            kinetics_list = json.loads(row['kinetic_json'])
+            kinetics_list.append(kinetic_data)
+            max_kinetics = 20 # Keep the profile relevant to recent behavior
+            kinetics_list = kinetics_list[-max_kinetics:]
+            new_kinetics_json = json.dumps(kinetics_list)
             cursor.execute(
-                "UPDATE behavioral_profiles SET embeddings_json = ? WHERE user_id = ?",
-                (new_embeddings_json, user_id)
+                "UPDATE behavioral_profiles SET kinetic_json = ? WHERE user_id = ?",
+                (new_kinetics_json, user_id)
             )
         else:
             # This is the first data point for a new user.
-            new_embeddings_json = json.dumps([embedding])
+            new_kinetics_json = json.dumps([kinetic_data])
             cursor.execute(
-                "INSERT INTO behavioral_profiles (user_id, embeddings_json) VALUES (?, ?)",
-                (user_id, new_embeddings_json)
+                "INSERT INTO behavioral_profiles (user_id, kinetic_json) VALUES (?, ?)",
+                (user_id, new_kinetics_json)
             )
         conn.commit()
         conn.close()

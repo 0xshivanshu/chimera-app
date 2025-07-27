@@ -74,38 +74,50 @@ def validate_impossible_travel(user_id: str, current_location: Dict[str, float])
 
 # --- Tool 3: Behavioral Anomaly (DB-Profile Driven) ---
 def get_behavioral_anomaly_score(user_id: str, live_kinetic_data: dict) -> Dict[str, Any]:
-    """Calculates a real anomaly score by comparing live data to the user's stored SQLite profile."""
+    """
+    Calculates a statistical anomaly score by comparing live numerical data to the user's stored SQLite profile.
+    This version uses a direct numerical comparison (normalized Euclidean distance).
+    """
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT embeddings_json FROM behavioral_profiles WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT kinetic_json FROM behavioral_profiles WHERE user_id = ?", (user_id,))
         profile = cursor.fetchone()
         conn.close()
 
         min_samples_for_baseline = 5
-        if not profile or len(json.loads(profile['embeddings_json'])) < min_samples_for_baseline:
+        if not profile or len(json.loads(profile['kinetic_json'])) < min_samples_for_baseline:
             log.warning(f"Not enough behavioral data for user '{user_id}' to form a reliable baseline.")
             return {"status": "skipped", "message": f"Baseline requires at least {min_samples_for_baseline} data points."}
-
-        baseline_embeddings = np.array(json.loads(profile['embeddings_json']))
-        profile_centroid = np.mean(baseline_embeddings, axis=0)
-
-        live_string = f"typing speed: {live_kinetic_data.get('typing_speed_wpm', 0)} words per minute, " \
-                      f"mouse speed: {live_kinetic_data.get('mouse_speed_pps', 0)} pixels per second"
-        live_embedding = embedding_model.encode(live_string)
         
-        # Cosine similarity is 1 for identical vectors, 0 for orthogonal. Anomaly is the inverse.
-        similarity = cosine_similarity(live_embedding.reshape(1, -1), profile_centroid.reshape(1, -1))[0][0]
-        anomaly_score = 1 - similarity
-        anomaly_threshold = 0.7 # This could be a configurable value in config.py
-        is_anomalous = anomaly_score > anomaly_threshold
+        baseline_data = [np.array([d['typing_speed_wpm'], d['mouse_speed_pps']]) for d in json.loads(profile['kinetic_json'])]
+        baseline_data = np.array(baseline_data)
+
+        profile_mean = np.mean(baseline_data, axis=0)
+        profile_std = np.std(baseline_data, axis=0)
         
+        profile_std[profile_std == 0] = 1 
+
+        live_data = np.array([
+            live_kinetic_data.get('typing_speed_wpm', 0),
+            live_kinetic_data.get('mouse_speed_pps', 0)
+        ])
+
+        z_scores = (live_data - profile_mean) / profile_std
+        anomaly_score = np.linalg.norm(z_scores)
+        
+        anomaly_threshold = 3.0 # A common threshold for Z-scores (roughly 99.7% of data)
+        is_anomalous = anomaly_score > anomaly_threshold        
         log.info(f"Behavioral anomaly check for '{user_id}': score {anomaly_score:.3f}. Anomalous: {is_anomalous}")
-        return {"status": "success", "is_anomalous": is_anomalous, "anomaly_score": round(anomaly_score, 3)}
+        result = {"status": "success", "is_anomalous": is_anomalous, "anomaly_score": round(anomaly_score, 3)}
+        print(f"DEBUG: GROUND TRUTH from get_behavioral_anomaly_score -> {result}")
+        return result
+
     except Exception as e:
         log.error(f"Error in get_behavioral_anomaly_score for user '{user_id}': {e}", exc_info=True)
         return {"error": str(e)}
-
+    
+    
 # --- Tool 4: SMS Phishing Analysis (Pre-trained Model) ---
 try:
     # Load model once on module import for efficiency.

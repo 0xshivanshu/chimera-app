@@ -1,3 +1,7 @@
 memory/user_profiles.db
+memory/faiss_index.bin
+memory/incident_log.json
 chimera.log
 .env
+.cache
+__pycache__
