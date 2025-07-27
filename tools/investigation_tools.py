@@ -21,7 +21,10 @@ def check_geo_fence_otp(otp_location: Dict[str, float], sim_location: Dict[str, 
         distance_km = great_circle(loc1, loc2).kilometers
         is_match = distance_km <= 50  # Using a 50km radius to account for inaccuracies.
         log.info(f"Geo-fence check: distance is {distance_km:.2f}km.")
-        return {"status": "success", "distance_km": round(distance_km, 2), "is_match": is_match}
+        result = {"status": "success", "distance_km": round(distance_km, 2), "is_match": is_match}
+        print(f"DEBUG: GROUND TRUTH from check_geo_fence_otp -> {result}")
+        return result
+
     except Exception as e:
         log.error(f"Error in check_geo_fence_otp: {e}", exc_info=True)
         return {"error": f"Failed to calculate distance. Details: {e}"}
@@ -58,10 +61,13 @@ def validate_impossible_travel(user_id: str, current_location: Dict[str, float])
         is_impossible = time_elapsed_seconds < min_required_time_seconds and time_elapsed_seconds > 0
 
         log.info(f"Impossible travel check for '{user_id}': travel of {distance_km:.2f}km in {time_elapsed_seconds/3600:.2f} hours. Impossible: {is_impossible}")
-        return {
+        result = {
             "status": "success", "is_impossible": is_impossible,
             "details": f"Travel of {distance_km:.2f}km in {time_elapsed_seconds/3600:.2f} hours was deemed {'impossible' if is_impossible else 'possible'}."
         }
+        print(f"DEBUG: GROUND TRUTH from validate_impossible_travel -> {result}")
+        return result
+
     except Exception as e:
         log.error(f"Error in validate_impossible_travel for user '{user_id}': {e}", exc_info=True)
         return {"error": str(e)}
@@ -120,7 +126,9 @@ def analyze_sms_phishing(sms_text: str) -> Dict[str, Any]:
         is_phishing = result['label'] == 'LABEL_1'
         confidence = result['score']
         log.info(f"SMS analysis complete. Phishing: {is_phishing} with confidence {confidence:.2f}.")
-        return {"status": "success", "is_phishing": is_phishing, "confidence": round(confidence, 3)}
+        result_dict = {"status": "success", "is_phishing": is_phishing, "confidence": round(confidence, 3)}
+        print(f"DEBUG: GROUND TRUTH from analyze_sms_phishing -> {result_dict}")
+        return result_dict
     except Exception as e:
         log.error(f"Error during SMS phishing analysis: {e}", exc_info=True)
         return {"error": str(e)}

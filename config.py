@@ -74,3 +74,49 @@ def load_prompt(filename: str) -> str:
 ORCHESTRATOR_PROMPT = load_prompt("orchestrator.txt")
 INQUISITOR_PROMPT = load_prompt("inquisitor.txt")
 ADVERSARY_PROMPT = load_prompt("adversary.txt")
+
+
+# --- TOOL SCHEMA DEFINITIONS ---
+# This is the modern, structured way to define tools for autogen agents.
+
+investigation_tool_schemas = [
+    {
+        "type": "function",
+        "function": {
+            "name": "validate_impossible_travel",
+            "description": "Checks if a user's travel between their last known location and the current one is physically possible.",
+            "parameters": { "type": "object", "properties": { "user_id": {"type": "string"}, "current_location": {"type": "object"} }, "required": ["user_id", "current_location"] }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_behavioral_anomaly_score",
+            "description": "Compares live typing/mouse data to a user's stored profile to detect behavioral changes.",
+            "parameters": { "type": "object", "properties": { "user_id": {"type": "string"}, "live_kinetic_data": {"type": "object"} }, "required": ["user_id", "live_kinetic_data"] }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "check_geo_fence_otp",
+            "description": "Calculates the geographic distance between an OTP request and the user's SIM card.",
+            "parameters": { "type": "object", "properties": { "otp_location": {"type": "object"}, "sim_location": {"type": "object"} }, "required": ["otp_location", "sim_location"] }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "analyze_sms_phishing",
+            "description": "Analyzes the text of an SMS to determine if it is a phishing attempt.",
+            "parameters": { "type": "object", "properties": { "sms_text": {"type": "string"} }, "required": ["sms_text"] }
+        }
+    }
+]
+
+action_tool_schemas = [
+    { "type": "function", "function": { "name": "lock_user_session", "description": "Locks a user's session.", "parameters": { "type": "object", "properties": { "user_id": {"type": "string"}, "reason": {"type": "string"} }, "required": ["user_id", "reason"] } } },
+    { "type": "function", "function": { "name": "initiate_step_up_auth", "description": "Initiates multi-factor authentication for a user.", "parameters": { "type": "object", "properties": { "user_id": {"type": "string"}, "reason": {"type": "string"} }, "required": ["user_id", "reason"] } } },
+    { "type": "function", "function": { "name": "send_notification", "description": "Sends a notification to a user.", "parameters": { "type": "object", "properties": { "user_id": {"type": "string"}, "message": {"type": "string"}, "level": {"type": "string"} }, "required": ["user_id", "message", "level"] } } },
+    { "type": "function", "function": { "name": "log_incident_to_memory", "description": "Logs an incident summary to long-term memory.", "parameters": { "type": "object", "properties": { "summary_text": {"type": "string"} }, "required": ["summary_text"] } } }
+]

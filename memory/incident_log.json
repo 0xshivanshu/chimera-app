@@ -1,0 +1,16 @@
+{
+  "0": "User login flagged for impossible travel, session locked.",
+  "1": "Phishing attempt detected. User's session locked due to suspicious SMS message.",
+  "2": "Session locked due to impossibility detection: user-delta-002 traveled an impossible distance in a short time.",
+  "3": "Temporarily locked user-delta-002's session due to suspected unauthorized OTP access.",
+  "4": "Temporarily locked user-delta-002's session due to suspected unauthorized OTP access.",
+  "5": "Phishing attempt with medium threat level, step-up auth initiated for user-delta-002.",
+  "6": "User ID user-delta-002 was found to have a low-risk message, likely a normal conversation, with a confidence of 93.8%.",
+  "7": "Phishing attempt with medium threat level, step-up auth initiated for user-delta-002.",
+  "8": "Phishing attempt, MFA initiated for user-delta-002; medium level risk",
+  "9": "Phishing attempt, MFA initiated for user-delta-002; medium level risk",
+  "10": "Normal conversation detected.",
+  "11": "Phishing attempt detected with 60% confidence, MFA initiated for user-delta-002",
+  "12": "Suspicious OTP request from a distant location. User's session locked by security measures.",
+  "13": "User attempted impossible travel, locking user session."
+}
