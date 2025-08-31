@@ -33,13 +33,13 @@ Tech Stack
 The real-time SMS analysis is a core feature of this project, but it requires a special permission (`RECEIVE_SMS`) that is not available in the standard Expo Go client app.
 Therefore, the SMS feature will not work if you run the project in Expo Go.
 
-## Alternative: How to Test the SMS Feature
+### Alternative: How to Test the SMS Feature
 
 To fully test the SMS functionality, you must build a custom development client of the app. This packages the necessary native code and allows the permission to be granted.
 
-# Navigate to the mobile-app directory
+### Navigate to the mobile-app directory
 cd mobile-app
-# Run the EAS build command
+### Run the EAS build command
 eas build --profile development --platform android
 _____________________________________________________________________________________________________________________________________________________________________________________________________________
 # Getting Started (Local Setup)
@@ -52,21 +52,21 @@ Prerequisites:
   
 1. Backend Setup
 
-# Navigate to the backend directory
+### Navigate to the backend directory
 cd project-chimera
 pip install -r requirements.txt
 
-# Create a .env file and add your MONGO_DB_URI (No other keys needed for local testing)
+### Create a .env file and add your MONGO_DB_URI (No other keys needed for local testing)
 
-# Run the backend server, listening on all interfaces
+### Run the backend server, listening on all interfaces
 uvicorn api:app --reload --host 0.0.0.0
 2. Mobile App Setup
 
-# Navigate to the mobile app directory
+### Navigate to the mobile app directory
 cd mobile-app
 npm install
 
-# IMPORTANT: Configure the API address
+## IMPORTANT: Configure the API address
 Open src/api/chimeraApi.ts and set API_BASE_URL to your computer's local IP address.
 
 # Start the Expo development server
