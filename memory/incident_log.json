@@ -1,4 +1,8 @@
 {
   "0": "User Charlie attempted impossible travel. Possibly due to malicious login attempt.",
-  "1": "Phishing attempt detected, 2-factor authentication initiated."
+  "1": "Phishing attempt detected, 2-factor authentication initiated.",
+  "2": "Insufficient evidence to determine threat. Further investigation needed.",
+  "3": "Low threat level detected. Inadequate user threat level classification for user ID user-charlie-789.",
+  "4": "Phishing attempt detected, 2-factor authentication initiated.",
+  "5": "Phishing attempt detected, 2-factor authentication initiated."
 }

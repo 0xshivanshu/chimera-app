@@ -18,6 +18,9 @@ INQUISITOR_MODEL = os.getenv("INQUISITOR_MODEL")
 FORGER_MODEL = os.getenv("FORGER_MODEL")
 ADVERSARY_MODEL = os.getenv("ADVERSARY_MODEL")
 
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+
 # --- Build the Master Configuration List ---
 config_list = []
 all_models = {
