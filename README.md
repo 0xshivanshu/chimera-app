@@ -28,7 +28,7 @@ Tech Stack
 | **Database**  | MongoDB                                  |
 | **Core Libs** | `axios`, `passlib`, `python-jose`        |
 
-## Important Note on SMS Functionality
+### Important Note on SMS Functionality
 
 The real-time SMS analysis is a core feature of this project, but it requires a special permission (`RECEIVE_SMS`) that is not available in the standard Expo Go client app.
 Therefore, the SMS feature will not work if you run the project in Expo Go.
@@ -69,7 +69,7 @@ npm install
 ## IMPORTANT: Configure the API address
 Open src/api/chimeraApi.ts and set API_BASE_URL to your computer's local IP address.
 
-# Start the Expo development server
+### Start the Expo development server
 npx expo start
 
 You can now open the app in Expo Go to test the UI and location features, or connect your custom development client to test the SMS feature.
