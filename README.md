@@ -3,6 +3,7 @@
 Chimera is a security platform built to detect and investigate potential threats using real-world data from a mobile device. It has a backend with AI agent integration to provide real-time analysis of user location and incoming messages.
 
 This repository contains the full monorepo for the project:
+
 `mobile-app/`: A React Native client for user authentication and data collection.
 `project-chimera/`: The core FastAPI backend that receives data and orchestrates analysis.
 
