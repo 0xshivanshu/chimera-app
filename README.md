@@ -67,8 +67,9 @@ cd mobile-app
 npm install
 
 # IMPORTANT: Configure the API address
-# Open src/api/chimeraApi.ts and set API_BASE_URL to your computer's local IP address.
+Open src/api/chimeraApi.ts and set API_BASE_URL to your computer's local IP address.
 
 # Start the Expo development server
 npx expo start
+
 You can now open the app in Expo Go to test the UI and location features, or connect your custom development client to test the SMS feature.
